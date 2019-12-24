@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>路由模块使用</title>
+</head>
+
+<body ng-app="app">
+  <ul>
+    <li><a href="#!/a">A</a></li><!-- 本来标准是#/a,但一直切换不了，后来发现这样才可以，但为什么 -->
+    <!-- file:///E:/vuecli/angular-demo/todomvc-app-template/routeDemo/route.html#!/a -->
+    <li><a href="#!/b">B</a></li>
+    <li><a href="#!/c">C</a></li>
+  </ul>
+  <div ng-view></div>
+
+  <script src="../node_modules/angular/angular.js"></script>
+  <script src="../node_modules/angular-route/angular-route.js"></script>
+  <script id='tem' type="text/ng-template">
+    <h1>{{title}}</h1>
+  </script>
+  <script>
+    var app = angular.module('app', ['ngRoute']);
+    app.config(['$routeProvider', function($routeProvider) {
+      $routeProvider
+      .when('/student/:name?',{//:为占位符，？为可选
+        controller:'studentController',
+        templateUrl:'tem'
+      })
+        .when('/a', {
+          controller: 'AController',
+          templateUrl: 'tem'
+          //'./a.html'为什么就涉及到了跨域？一定要在里面写模板？	
+        })
+        .when('/b', {
+          controller: 'BController',
+          templateUrl: 'tem'
+        })
+        .when('/c', {
+          templateUrl: 'tem',
+          controller: 'CController'
+        })
+        .otherwise(
+          {redirectTo:'/student/:name?'}
+          );
+        
+    }]);
+
+app.controller('studentController', ['$scope','$routeParams', function($scope,$routeParams){
+
+  $scope.title='虞美人盛开的山坡'+$routeParams['name']+'你喜欢看吗？';
+  
+}])
+  
+    app.controller('AController', ['$scope', function($scope) {
+      $scope.title = '这是A控制器';
+      alert('这是A控制器');
+    }]);
+
+    app.controller('BController', ['$scope', function($scope) {
+      $scope.title = '这是B控制器';
+    }]);
+
+    app.controller('CController', ['$scope', function($scope) {
+      $scope.title = '这是C控制器';
+    }]);
+  </script>
+</body>
+
+</html>
